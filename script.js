@@ -39,7 +39,12 @@ const transactions = [
 const Transaction = {
   all: transactions,
 
-  // Somar entradas
+  add(transaction) {
+    Transaction.all.push(transaction);
+
+    App.reload();
+  },
+
   incomes() {
     let income = 0;
 
@@ -52,7 +57,6 @@ const Transaction = {
     return income;
   },
 
-  // Somas saídas
   expenses() {
     let expense = 0;
 
@@ -65,20 +69,19 @@ const Transaction = {
     return expense;
   },
 
-  // Balanço de entradas e saídas
   total() {
     return Transaction.incomes() + Transaction.expenses();
   },
 };
 
-const DOM = {
+const HandleDOM = {
   transactionsContainer: document.querySelector("#data-table tbody"),
 
   addTransaction(transaction, index) {
     const tr = document.createElement("tr");
-    tr.innerHTML = DOM.innerHTMLTransaction(transaction);
+    tr.innerHTML = HandleDOM.innerHTMLTransaction(transaction);
 
-    DOM.transactionsContainer.appendChild(tr);
+    HandleDOM.transactionsContainer.appendChild(tr);
   },
 
   innerHTMLTransaction(transaction) {
@@ -103,6 +106,10 @@ const DOM = {
     document.querySelector("#expenseDisplay").innerHTML = Utils.formatCurrency(Transaction.expenses());
     document.querySelector("#totalDisplay").innerHTML = Utils.formatCurrency(Transaction.total());
   },
+
+  clearTransactions() {
+    HandleDOM.transactionsContainer.innerHTML = '';
+  }
 };
 
 const Utils = {
@@ -120,8 +127,26 @@ const Utils = {
   },
 };
 
-Transaction.all.forEach((transaction) => {
-  DOM.addTransaction(transaction);
-});
+const App = {
+  init() {    
+    Transaction.all.forEach((transaction) => {
+      HandleDOM.addTransaction(transaction);
+    });
+    
+    HandleDOM.updateBalance();
+  },
 
-DOM.updateBalance();
+  reload() {
+    HandleDOM.clearTransactions();
+    App.init();
+  },
+}
+
+App.init();
+
+Transaction.add({
+  id: 5,
+  description: 'Aluguel',
+  amount: -65000,
+  date: '04/04/2021'
+});
