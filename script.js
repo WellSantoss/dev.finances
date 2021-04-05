@@ -9,29 +9,19 @@ const Modal = {
   },
 };
 
+const Storage = {
+  get() {
+    return JSON.parse(localStorage.getItem('dev.finances:transactions')) || [];
+  },
+
+  set(transaction) {
+    localStorage.setItem('dev.finances:transactions',
+    JSON.stringify(transaction));
+  }
+}
+
 const Transaction = {
-  all: [
-    {
-      description: "Luz",
-      amount: -50000,
-      date: "23/01/2021",
-    },
-    {
-      description: "Criação de Website",
-      amount: 500000,
-      date: "23/01/2021",
-    },
-    {
-      description: "Internet",
-      amount: -20000,
-      date: "23/01/2021",
-    },
-    {
-      description: "Criação de App",
-      amount: 200000,
-      date: "23/01/2021",
-    },
-  ],
+  all: Storage.get(),
 
   add(transaction) {
     Transaction.all.push(transaction);
@@ -121,9 +111,9 @@ const Utils = {
   },
 
   formatAmount(value){
-    value = Number(value.replace(/\,\./g, '')) * 100;
+    value = Number(value) * 100;
 
-    return value;
+    return Math.round(value);
   },
 
   formatCurrency(value) {
@@ -205,6 +195,7 @@ const App = {
     });
     
     HandleDOM.updateBalance();
+    Storage.set(Transaction.all);
   },
 
   reload() {
