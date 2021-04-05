@@ -193,6 +193,10 @@ header h1#logo {
   color: #e9292f;
 }
 
+#data-table td img{
+  cursor: pointer;
+}
+
 /* Footer */
 footer {
   text-align: center;
